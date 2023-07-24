@@ -61,16 +61,15 @@ server.get('/recetas/:id', async (req, res) => {
   res.json(result);
 })
 
-//POST
+//POST AÑADIR UNA RECETA
 
-server.post('/recetas/:id', async (req, res) => {
-  const receta = req.params.id;
+server.post('/recetas', async (req, res) => {
+  
   const nuevaReceta = req.body;
   try {
     const insert = 'INSERT INTO recetas (nombre, ingredientes, instrucciones) VALUES (?, ?, ?)';
     const conn = await getConnection();
     const [result] = await conn.query(insert, [
-      receta,
       nuevaReceta.nombre,
       nuevaReceta.ingredientes,
       nuevaReceta.instrucciones,
@@ -88,7 +87,48 @@ server.post('/recetas/:id', async (req, res) => {
 
 
 //PUT
-
+server.put('/recetas/:id', async (req, res) => {
+  const receta = req.params.receta;
+  const recetaId = req.params.id;
+  const{nombre, ingredientes, instrucciones} = req.body;
+  try{
+    const update =
+    'UPDATE recetas SET nombre=?, ingredientes=?, instrucciones=? WHERE id=?';
+    const conn = await getConnection();
+    const [result] = await conn.query(update, [
+      nombre,
+      ingredientes,
+      instrucciones,
+      recetaId,
+    ]);
+    conn.end();
+    res.json({
+      succes: true,
+    });
+  } catch (error) {
+    res.json({
+      succes: false,
+      message: error
+    });
+  }
+});
 
 //DELETE
 
+server.delete('/recetas/:id', async (req, res) => {
+  const id = req.params.id;
+  try {
+    const deleteSql = 'DELETE FROM recetas WHERE id=?';
+    const conn = await getConnection();
+    const [result] = await conn.query(deleteSql, [id]);
+    conn.end();
+    res.json({
+      success: true,
+    });
+  } catch (error) {
+    res.json({
+      success: false,
+      message: error,
+    });
+  }
+});
