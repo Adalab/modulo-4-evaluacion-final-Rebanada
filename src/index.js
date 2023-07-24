@@ -1,6 +1,4 @@
 
-// Imports
-
 const express = require('express');
 const cors = require('cors');
 const mysql = require('mysql2/promise');
@@ -21,7 +19,7 @@ async function getConnection() {
   const connection = await mysql.createConnection({
     host: process.env.DB_HOST || 'localhost',
     user: process.env.DB_USER || 'root',
-    password: process.env.DB_PASS, // <-- Pon aquí tu contraseña o en el fichero /.env en la carpeta raíz
+    password: process.env.DB_PASS,
     database: process.env.DB_NAME || 'recetas_db',
   });
 
@@ -37,9 +35,9 @@ server.listen(port, () => {
   console.log(`Ya se ha arrancado nuestro servidor: http://localhost:${port}/`);
 });
 
-// Endpoints
+// ENDPOINTS
 
-//TODAS LAS RECETAS
+//GET (TODAS LAS RECETAS)
 server.get('/recetas', async (req, res) => {
   const selectRecetas = 'SELECT * FROM recetas';
 
@@ -49,7 +47,7 @@ server.get('/recetas', async (req, res) => {
   res.json({ info: { count: result.length }, results: result });
 });
 
-//POR ID
+//GET (SELECCIONAR POR ID)
 
 server.get('/recetas/:id', async (req, res) => {
   const id = req.params.id;
@@ -61,7 +59,7 @@ server.get('/recetas/:id', async (req, res) => {
   res.json(result);
 })
 
-//POST AÑADIR UNA RECETA
+//POST (AÑADIR UNA RECETA)
 
 server.post('/recetas', async (req, res) => {
   
@@ -85,8 +83,8 @@ server.post('/recetas', async (req, res) => {
   }
 });
 
+//PUT (MODIFICAR UNA RECETA)
 
-//PUT
 server.put('/recetas/:id', async (req, res) => {
   const receta = req.params.receta;
   const recetaId = req.params.id;
@@ -113,7 +111,7 @@ server.put('/recetas/:id', async (req, res) => {
   }
 });
 
-//DELETE
+//DELETE (BORRAR UNA RECETA)
 
 server.delete('/recetas/:id', async (req, res) => {
   const id = req.params.id;
